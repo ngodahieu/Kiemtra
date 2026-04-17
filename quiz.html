@@ -218,31 +218,29 @@ questions.forEach((group, groupIndex) => {
   }
 
   // 🔥 XÁO TRỘN CÂU TRONG GROUP
-  const shuffledQuestions = shuffleWithSeed(group.questions, seed + groupIndex);
+const shuffledQuestions = shuffleWithSeed(group.questions, seed + groupIndex);
 
-  shuffledQuestions.forEach((q, index) => {
+shuffledQuestions.forEach((q, index) => {
+  const qIndex = groupIndex + "_" + index;
+  const saved = localStorage.getItem("q" + qIndex);
 
-  group.questions.forEach((q, index) => {
-    const qIndex = groupIndex + "_" + index;
-    const saved = localStorage.getItem("q" + qIndex);
+  const div = document.createElement("div");
+  div.classList.add("question");
 
-    const div = document.createElement("div");
-    div.classList.add("question");
+  div.innerHTML = `
+    <p><b>Câu hỏi:</b> ${q.question}</p>
+    ${q.options.map((opt, i) => `
+      <label>
+        <input type="radio" name="q${qIndex}" value="${i}"
+          ${saved == i ? "checked" : ""}
+          onchange="saveAnswer('${qIndex}', ${i})">
+        ${opt}
+      </label>
+    `).join("")}
+  `;
 
-    div.innerHTML = `
-      <p><b>Câu hỏi:</b> ${q.question}</p>
-      ${q.options.map((opt, i) => `
-        <label>
-          <input type="radio" name="q${qIndex}" value="${i}"
-            ${saved == i ? "checked" : ""}
-            onchange="saveAnswer('${qIndex}', ${i})">
-          ${opt}
-        </label>
-      `).join("")}
-    `;
-
-    quizDiv.appendChild(div);
-  });
+  quizDiv.appendChild(div);
+});
 
 });
 function saveAnswer(qIndex, value) {
