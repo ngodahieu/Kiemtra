@@ -139,16 +139,20 @@ for (let i = 0; i < 20; i++) {
 
 <script>
 function login() {
-  const name = document.getElementById("name").value;
+  const validStudents = ["HS001", "HS002", "HS003"];
 
-  if (name.trim() === "") {
-    alert("Nhập tên đi!");
+function login() {
+  const id = document.getElementById("name").value.trim();
+
+  if (!validStudents.includes(id)) {
+    alert("Mã học sinh không đúng!");
     return;
   }
 
-  localStorage.setItem("studentName", name);
+  localStorage.setItem("studentID", id);
   window.location.href = "quiz.html";
 }
+
 
 // particles
 tsParticles.load("particles", {
