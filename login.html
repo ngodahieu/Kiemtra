@@ -138,6 +138,7 @@ for (let i = 0; i < 20; i++) {
 </div>
 
 <script>
+  localStorage.removeItem("studentID");
   // chỉ redirect nếu đang ở quiz
 if (localStorage.getItem("studentID") && window.location.pathname.includes("login.html")) {
   // không tự nhảy nữa
