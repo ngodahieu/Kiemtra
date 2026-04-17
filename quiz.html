@@ -213,6 +213,7 @@ function saveAnswer(qIndex, value) {
   localStorage.setItem("q" + qIndex, value);
 }
 function submitTest() {
+  clearInterval(countdown); // ⏱ DỪNG ĐỒNG HỒ NGAY
   localStorage.removeItem("startTime");
 
   let score = 0;
@@ -246,7 +247,7 @@ tsParticles.load("particles", {
   }
 });
   // tổng thời gian (5 phút)
-const TOTAL_TIME = 300;
+const TOTAL_TIME = 120;
 
 // lấy thời điểm bắt đầu (lưu lại)
 let startTime = localStorage.getItem("startTime");
