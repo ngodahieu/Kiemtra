@@ -111,7 +111,7 @@
 </div>
 
 <script>
-const questions = [
+const originalQuestions = [
   {
     question: "Nguyên tố nào có ký hiệu O?",
     options: ["Oxy", "Hydro", "Natri"],
@@ -129,11 +129,43 @@ const questions = [
   }
 ];
 
-// hiển thị tên
-const name = localStorage.getItem("studentName") || "Học sinh";
-document.getElementById("welcome").innerText = "Chúc bạn làm bài tốt, " + name;
+const studentID = localStorage.getItem("studentID");
 
-// load câu hỏi
+if (!studentID) {
+  alert("Chưa đăng nhập!");
+  window.location.href = "login.html";
+}
+
+function seededRandom(seed) {
+  let x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+function getSeedFromString(str) {
+  return str.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+}
+
+function shuffleWithSeed(array, seed) {
+  let arr = [...array];
+  let currentIndex = arr.length;
+
+  while (currentIndex !== 0) {
+    let randomIndex = Math.floor(seededRandom(seed++) * currentIndex);
+    currentIndex--;
+
+    [arr[currentIndex], arr[randomIndex]] = [
+      arr[randomIndex], arr[currentIndex]
+    ];
+  }
+
+  return arr;
+}
+
+const seed = getSeedFromString(studentID);
+const questions = shuffleWithSeed(originalQuestions, seed);
+
+document.getElementById("welcome").innerText = "Mã học sinh: " + studentID;
+
 const quizDiv = document.getElementById("quiz");
 
 questions.forEach((q, index) => {
