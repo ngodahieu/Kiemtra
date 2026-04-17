@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Đăng nhập</title>
+</head>
+<body style="text-align:center; margin-top:100px; font-family:Arial">
+
+<h1>🔐 Đăng nhập</h1>
+
+<input type="text" id="name" placeholder="Nhập tên học sinh">
+<br><br>
+<button onclick="login()">Vào làm bài</button>
+
+<script>
+function login() {
+  const name = document.getElementById("name").value;
+
+  if (name.trim() === "") {
+    alert("Nhập tên đi!");
+    return;
+  }
+
+  // lưu tên vào trình duyệt
+  localStorage.setItem("studentName", name);
+
+  // chuyển sang trang làm bài
+  window.location.href = "quiz.html";
+}
+</script>
+
+</body>
+</html>
