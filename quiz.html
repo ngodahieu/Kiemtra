@@ -205,6 +205,9 @@ function shuffleWithSeed(array, seed) {
 const seed = getSeedFromString(studentID);
 const questions = shuffleWithSeed(originalQuestions, seed);
   let finalQuestions = [];
+  const totalQuestions = originalQuestions
+  .flatMap(group => group.questions)
+  .length;
 
 document.getElementById("welcome").innerText = "Mã học sinh: " + studentID;
 
@@ -232,7 +235,7 @@ shuffledQuestions.forEach((q, index) => {
   div.classList.add("question");
 
   div.innerHTML = `
-    <p><b>Câu ${qIndex + 1}:</b> ${q.question}</p>
+    <p><b>Câu ${qIndex + 1}/${totalQuestions}:</b> ${q.question}</p>
     ${q.options.map((opt, i) => `
       <label>
         <input type="radio" name="q${qIndex}" value="${i}"
