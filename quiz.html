@@ -267,21 +267,8 @@ finalQuestions.forEach((q, index) => {
   if (selected !== null && parseInt(selected) === q.answer) {
     score++;
   }
-
   localStorage.removeItem("q" + index);
 });
-    const selected = localStorage.getItem("q" + qIndex);
-
-    answers.push(selected ?? "");
-
-    if (selected !== null && parseInt(selected) === q.answer) {
-      score++;
-    }
-
-    localStorage.removeItem("q" + qIndex);
-  });
-});
-
   localStorage.setItem("done_" + studentID, "true");
 
   // 🔥 GỬI LÊN GOOGLE FORM
