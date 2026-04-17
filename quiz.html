@@ -16,13 +16,14 @@
     }
 
     body {
-      background: linear-gradient(135deg, #020617, #0f172a);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
+  background: linear-gradient(135deg, #020617, #0f172a);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* 🔥 đổi */
+  overflow-y: auto;        /* 🔥 đổi */
+  padding-top: 40px;       /* 🔥 thêm cho đẹp */
+}
 
     #particles {
       position: absolute;
@@ -145,18 +146,15 @@
   position: fixed;
   top: 140px;
   right: 20px;
-  width: 220px;
+  width: 240px;
   max-height: 70vh;
   overflow-y: auto;
   background: white;
-  padding: 10px;
+  padding: 12px;
   border-radius: 12px;
   border: 2px solid #3b82f6;
-  box-shadow: 0 0 15px rgba(59,130,246,0.4);
-  z-index: 999;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
+  box-shadow: 0 0 20px rgba(59,130,246,0.5);
+  z-index: 9999; /* 🔥 đảm bảo nổi */
 }
 
 .q-box {
@@ -337,9 +335,15 @@ function createQuestionNav() {
 
     // click → nhảy tới câu
     box.onclick = () => {
-      document.querySelectorAll(".question")[index]
-        .scrollIntoView({ behavior: "smooth" });
-    };
+  const questions = document.querySelectorAll(".question");
+
+  if (questions[index]) {
+    questions[index].scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  }
+};
 
     nav.appendChild(box);
   });
