@@ -87,17 +87,26 @@
       color: #1e3a8a;
     }
     #timer {
-  position: fixed;
+  position: fixed; /* luôn đứng yên */
   top: 20px;
   right: 20px;
   background: white;
   color: #1e3a8a;
-  padding: 10px 15px;
-  border-radius: 10px;
+  padding: 12px 18px;
+  border-radius: 12px;
   border: 2px solid #3b82f6;
   font-weight: bold;
-  box-shadow: 0 0 10px rgba(59,130,246,0.3);
-  z-index: 2;
+  font-size: 18px;
+  box-shadow: 0 0 15px rgba(59,130,246,0.4);
+  z-index: 999;
+  transition: 0.3s;
+}
+
+/* khi sắp hết giờ */
+.timer-danger {
+  color: red !important;
+  border-color: red !important;
+  box-shadow: 0 0 15px red !important;
 }
     @keyframes fadeIn {
       from {opacity: 0; transform: translateY(20px);}
@@ -225,27 +234,47 @@ tsParticles.load("particles", {
     }
   }
 });
-  let timeLeft = 120; // 2 phút (120 giây)
+  // tổng thời gian (5 phút)
+const TOTAL_TIME = 300;
+
+// lấy thời điểm bắt đầu (lưu lại)
+let startTime = localStorage.getItem("startTime");
+
+if (!startTime) {
+  startTime = Date.now();
+  localStorage.setItem("startTime", startTime);
+}
 
 const timerEl = document.getElementById("timer");
 
 const countdown = setInterval(() => {
+  const now = Date.now();
+  const elapsed = Math.floor((now - startTime) / 1000);
+  let timeLeft = TOTAL_TIME - elapsed;
+
+  if (timeLeft < 0) timeLeft = 0;
+
   let minutes = Math.floor(timeLeft / 60);
   let seconds = timeLeft % 60;
 
-  // format 2 số
   minutes = minutes < 10 ? "0" + minutes : minutes;
   seconds = seconds < 10 ? "0" + seconds : seconds;
 
   timerEl.innerText = minutes + ":" + seconds;
 
-  timeLeft--;
+  // 🔴 đổi màu khi còn < 60s
+  if (timeLeft <= 60) {
+    timerEl.classList.add("timer-danger");
+  }
 
-  if (timeLeft < 0) {
+  // hết giờ
+  if (timeLeft === 0) {
     clearInterval(countdown);
     alert("Hết giờ!");
-    submitTest(); // tự nộp bài
+    localStorage.removeItem("startTime"); // reset cho lần sau
+    submitTest();
   }
+
 }, 1000);
 </script>
 
