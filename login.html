@@ -138,7 +138,7 @@ for (let i = 0; i < 20; i++) {
 </div>
 
 <script>
-const validStudents = ["00413", "01303"];
+const validStudents = ["01402", "01304"];
 
 function login() {
   const id = document.getElementById("name").value.trim();
@@ -153,16 +153,20 @@ function login() {
     return;
   }
 
-  // ❗ kiểm tra đã làm chưa (PHẢI đặt trước)
   const done = localStorage.getItem("done_" + id);
 
-if (done === "true") {
-  alert("Bạn đã làm bài rồi!");
-  return;
-}
+  if (done === "true") {
+    alert("Bạn đã làm bài rồi!");
+    return;
+  }
 
-  // ✅ chỉ khi hợp lệ mới cho vào
+  // 🔥 QUAN TRỌNG: reset thời gian
+  localStorage.removeItem("startTime");
+
+  // lưu ID
   localStorage.setItem("studentID", id);
+
+  // chuyển trang
   window.location.href = "quiz.html";
 }
 
