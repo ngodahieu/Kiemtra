@@ -213,23 +213,44 @@ function saveAnswer(qIndex, value) {
   localStorage.setItem("q" + qIndex, value);
 }
 function submitTest() {
-  clearInterval(countdown); // ⏱ DỪNG ĐỒNG HỒ NGAY
+  clearInterval(countdown);
+
   localStorage.removeItem("startTime");
 
   let score = 0;
+  let answers = [];
 
   questions.forEach((q, index) => {
     const selected = localStorage.getItem("q" + index);
+
+    answers.push(selected ?? "");
 
     if (selected !== null && parseInt(selected) === q.answer) {
       score++;
     }
 
-    localStorage.removeItem("q" + index); // xóa sau khi nộp
+    localStorage.removeItem("q" + index);
   });
+
+  // đánh dấu đã làm
   localStorage.setItem("done_" + studentID, "true");
-  document.getElementById("result").innerText =
-    "Bạn đúng " + score + "/" + questions.length + " câu";
+
+  // 🔥 GỬI LÊN GOOGLE FORM (NHỚ THAY LINK + ENTRY)
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSd_YK4a8Av99jA8Am5yOBx1kw2Xuw2nRlMz-Mfx08GqnO_T5Q/formResponse", {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body:
+      "entry.891986647=" + studentID +
+      "&entry.156437038=" + score +
+      "&entry.1381726656=" + answers.join(",")
+  });
+
+  // 🎉 thông báo + chuyển trang
+  alert("🎉 Chúc mừng bạn đã hoàn thành bài thi!");
+  window.location.href = "index.html";
 }
 
 // particles nhẹ
