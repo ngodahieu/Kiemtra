@@ -190,6 +190,8 @@ document.getElementById("welcome").innerText = "Mã học sinh: " + studentID;
 const quizDiv = document.getElementById("quiz");
 
 questions.forEach((q, index) => {
+  const saved = localStorage.getItem("q" + index);
+
   const div = document.createElement("div");
   div.classList.add("question");
 
@@ -197,7 +199,9 @@ questions.forEach((q, index) => {
     <p><b>Câu ${index + 1}:</b> ${q.question}</p>
     ${q.options.map((opt, i) => `
       <label>
-        <input type="radio" name="q${index}" value="${i}">
+        <input type="radio" name="q${index}" value="${i}"
+          ${saved == i ? "checked" : ""}
+          onchange="saveAnswer(${index}, ${i})">
         ${opt}
       </label>
     `).join("")}
@@ -205,16 +209,22 @@ questions.forEach((q, index) => {
 
   quizDiv.appendChild(div);
 });
-
+function saveAnswer(qIndex, value) {
+  localStorage.setItem("q" + qIndex, value);
+}
 function submitTest() {
-  localStorage.removeItem("startTime"); // reset timer
+  localStorage.removeItem("startTime");
+
   let score = 0;
 
   questions.forEach((q, index) => {
-    const selected = document.querySelector(`input[name="q${index}"]:checked`);
-    if (selected && parseInt(selected.value) === q.answer) {
+    const selected = localStorage.getItem("q" + index);
+
+    if (selected !== null && parseInt(selected) === q.answer) {
       score++;
     }
+
+    localStorage.removeItem("q" + index); // xóa sau khi nộp
   });
 
   document.getElementById("result").innerText =
