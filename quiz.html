@@ -232,10 +232,9 @@ function submitTest() {
     localStorage.removeItem("q" + index);
   });
 
-  // đánh dấu đã làm
   localStorage.setItem("done_" + studentID, "true");
 
-  // 🔥 GỬI LÊN GOOGLE FORM (NHỚ THAY LINK + ENTRY)
+  // 🔥 GỬI LÊN GOOGLE FORM
   fetch("https://docs.google.com/forms/d/e/1FAIpQLSd_YK4a8Av99jA8Am5yOBx1kw2Xuw2nRlMz-Mfx08GqnO_T5Q/formResponse", {
     method: "POST",
     mode: "no-cors",
@@ -248,7 +247,6 @@ function submitTest() {
       "&entry.1381726656=" + answers.join(",")
   });
 
-  // 🎉 thông báo + chuyển trang
   alert("🎉 Chúc mừng bạn đã hoàn thành bài thi!");
   window.location.href = "index.html";
 }
