@@ -226,7 +226,7 @@ function submitTest() {
 
     localStorage.removeItem("q" + index); // xóa sau khi nộp
   });
-
+  localStorage.setItem("done_" + studentID, true);
   document.getElementById("result").innerText =
     "Bạn đúng " + score + "/" + questions.length + " câu";
 }
@@ -287,6 +287,35 @@ const countdown = setInterval(() => {
   }
 
 }, 1000);
+  // chặn copy
+document.addEventListener("copy", e => {
+  e.preventDefault();
+});
+
+// chặn paste
+document.addEventListener("paste", e => {
+  e.preventDefault();
+});
+
+// chặn cut
+document.addEventListener("cut", e => {
+  e.preventDefault();
+});
+
+// chặn chuột phải
+document.addEventListener("contextmenu", e => {
+  e.preventDefault();
+});
+
+// chặn phím
+document.addEventListener("keydown", e => {
+  if (
+    (e.ctrlKey && ["c","v","u","s"].includes(e.key.toLowerCase())) ||
+    e.key === "F12"
+  ) {
+    e.preventDefault();
+  }
+});
 </script>
 
 </body>
