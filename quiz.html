@@ -209,14 +209,18 @@ document.getElementById("welcome").innerText = "Mã học sinh: " + studentID;
 
 const quizDiv = document.getElementById("quiz");
 
-originalQuestions.forEach((group, groupIndex) => {
+questions.forEach((group, groupIndex) => {
 
-  // hiện tư liệu nếu có
   if (group.passage) {
     const passageDiv = document.createElement("div");
     passageDiv.innerHTML = `<p><b>📄 Tư liệu:</b> ${group.passage}</p><hr>`;
     quizDiv.appendChild(passageDiv);
   }
+
+  // 🔥 XÁO TRỘN CÂU TRONG GROUP
+  const shuffledQuestions = shuffleWithSeed(group.questions, seed + groupIndex);
+
+  shuffledQuestions.forEach((q, index) => {
 
   group.questions.forEach((q, index) => {
     const qIndex = groupIndex + "_" + index;
