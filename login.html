@@ -161,7 +161,7 @@ function login() {
   }
 
   // 🔥 QUAN TRỌNG: reset thời gian
-  localStorage.removeItem("startTime");
+  localStorage.removeItem("startTime_" + id);
 
   // lưu ID
   localStorage.setItem("studentID", id);
