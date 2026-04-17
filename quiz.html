@@ -291,7 +291,6 @@ questions.forEach((group, groupIndex) => {
     passageDiv.innerHTML = `<p><b>📄 Tư liệu:</b> ${group.passage}</p><hr>`;
     quizDiv.appendChild(passageDiv);
   }
-createQuestionNav();
   // 🔥 XÁO TRỘN CÂU TRONG GROUP
 const shuffledQuestions = shuffleWithSeed(group.questions, seed + groupIndex);
 
@@ -321,6 +320,7 @@ shuffledQuestions.forEach((q, index) => {
 });
 
 });
+  createQuestionNav(); // ✅ đúng vị trí
   updateProgress();
 function saveAnswer(qIndex, value) {
   localStorage.setItem("q" + qIndex, value);
