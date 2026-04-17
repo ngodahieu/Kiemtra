@@ -108,6 +108,27 @@
   border-color: red !important;
   box-shadow: 0 0 15px red !important;
 }
+    #progressText {
+  margin: 10px 0;
+  font-weight: bold;
+  color: #1e3a8a;
+}
+
+#progressBar {
+  width: 100%;
+  height: 10px;
+  background: #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+#progressFill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #3b82f6, #1e3a8a);
+  transition: 0.3s;
+}
     @keyframes fadeIn {
       from {opacity: 0; transform: translateY(20px);}
       to {opacity: 1; transform: translateY(0);}
@@ -122,6 +143,10 @@
 <div class="container">
 
   <h2 id="welcome"></h2>
+  <div id="progressText">Đã làm: 0/0 câu</div>
+<div id="progressBar">
+  <div id="progressFill"></div>
+</div>
 
   <div id="quiz"></div>
 
@@ -205,9 +230,6 @@ function shuffleWithSeed(array, seed) {
 const seed = getSeedFromString(studentID);
 const questions = shuffleWithSeed(originalQuestions, seed);
   let finalQuestions = [];
-  const totalQuestions = originalQuestions
-  .flatMap(group => group.questions)
-  .length;
 
 document.getElementById("welcome").innerText = "Mã học sinh: " + studentID;
 
@@ -235,7 +257,7 @@ shuffledQuestions.forEach((q, index) => {
   div.classList.add("question");
 
   div.innerHTML = `
-    <p><b>Câu ${qIndex + 1}/${totalQuestions}:</b> ${q.question}</p>
+    <p><b>Câu ${qIndex + 1}:</b> ${q.question}</p>
     ${q.options.map((opt, i) => `
       <label>
         <input type="radio" name="q${qIndex}" value="${i}"
@@ -250,8 +272,27 @@ shuffledQuestions.forEach((q, index) => {
 });
 
 });
+  updateProgress();
 function saveAnswer(qIndex, value) {
   localStorage.setItem("q" + qIndex, value);
+  updateProgress(); // 🔥 thêm dòng này
+}
+function updateProgress() {
+  let answered = 0;
+
+  finalQuestions.forEach((q, index) => {
+    if (localStorage.getItem("q" + index) !== null) {
+      answered++;
+    }
+  });
+
+  const total = finalQuestions.length;
+
+  document.getElementById("progressText").innerText =
+    `Đã làm: ${answered}/${total} câu`;
+
+  document.getElementById("progressFill").style.width =
+    (answered / total) * 100 + "%";
 }
 function submitTest() {
   clearInterval(countdown);
