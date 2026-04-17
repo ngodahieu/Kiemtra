@@ -141,6 +141,41 @@
   box-shadow: 0 0 15px rgba(59,130,246,0.4);
   z-index: 999;
 }
+    #questionNav {
+  position: fixed;
+  top: 140px;
+  right: 20px;
+  width: 220px;
+  max-height: 70vh;
+  overflow-y: auto;
+  background: white;
+  padding: 10px;
+  border-radius: 12px;
+  border: 2px solid #3b82f6;
+  box-shadow: 0 0 15px rgba(59,130,246,0.4);
+  z-index: 999;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.q-box {
+  text-align: center;
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #3b82f6;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.q-box:hover {
+  background: #dbeafe;
+}
+
+.q-done {
+  background: #3b82f6;
+  color: white;
+}
     @keyframes fadeIn {
       from {opacity: 0; transform: translateY(20px);}
       to {opacity: 1; transform: translateY(0);}
@@ -152,6 +187,7 @@
 
 <div id="particles"></div>
 <div id="timer">90:00</div>
+<div id="questionNav"></div>
   <div id="progressText">Đã làm: 0/0 câu</div>
 <div id="progressBar">
   <div id="progressFill"></div>
@@ -255,7 +291,7 @@ questions.forEach((group, groupIndex) => {
     passageDiv.innerHTML = `<p><b>📄 Tư liệu:</b> ${group.passage}</p><hr>`;
     quizDiv.appendChild(passageDiv);
   }
-
+createQuestionNav();
   // 🔥 XÁO TRỘN CÂU TRONG GROUP
 const shuffledQuestions = shuffleWithSeed(group.questions, seed + groupIndex);
 
@@ -290,6 +326,26 @@ function saveAnswer(qIndex, value) {
   localStorage.setItem("q" + qIndex, value);
   updateProgress(); // 🔥 thêm dòng này
 }
+function createQuestionNav() {
+  const nav = document.getElementById("questionNav");
+  nav.innerHTML = "";
+
+  finalQuestions.forEach((q, index) => {
+    const box = document.createElement("div");
+    box.classList.add("q-box");
+    box.innerText = index + 1;
+
+    // click → nhảy tới câu
+    box.onclick = () => {
+      document.querySelectorAll(".question")[index]
+        .scrollIntoView({ behavior: "smooth" });
+    };
+
+    nav.appendChild(box);
+  });
+
+  updateNav();
+}
 function updateProgress() {
   let answered = 0;
 
@@ -306,6 +362,19 @@ function updateProgress() {
 
   document.getElementById("progressFill").style.width =
     (answered / total) * 100 + "%";
+
+  updateNav(); // 🔥 thêm dòng này
+}
+  function updateNav() {
+  const boxes = document.querySelectorAll(".q-box");
+
+  boxes.forEach((box, index) => {
+    if (localStorage.getItem("q" + index) !== null) {
+      box.classList.add("q-done");
+    } else {
+      box.classList.remove("q-done");
+    }
+  });
 }
 function submitTest() {
   clearInterval(countdown);
