@@ -134,22 +134,31 @@
 <script>
 const originalQuestions = [
   {
-    question: "Nguyên tố nào có ký hiệu O?",
-    options: ["Oxy", "Hydro", "Natri"],
-    answer: 0
+    passage: "Nước (H2O) gồm 2 nguyên tử H và 1 nguyên tử O.",
+    questions: [
+      {
+        question: "H2O có bao nhiêu nguyên tử?",
+        options: ["2", "3", "4"],
+        answer: 1
+      },
+      {
+        question: "Trong nước có nguyên tố nào?",
+        options: ["Na", "O", "Cl"],
+        answer: 1
+      }
+    ]
   },
   {
-    question: "H2O là gì?",
-    options: ["Oxy", "Nước", "Muối"],
-    answer: 1
-  },
-  {
-    question: "Na là nguyên tố gì?",
-    options: ["Natri", "Nitơ", "Neon"],
-    answer: 0
+    passage: "", // câu thường
+    questions: [
+      {
+        question: "Na là nguyên tố gì?",
+        options: ["Natri", "Nitơ", "Neon"],
+        answer: 0
+      }
+    ]
   }
 ];
-
 const studentID = localStorage.getItem("studentID");
 
 if (!studentID) {
@@ -189,25 +198,37 @@ document.getElementById("welcome").innerText = "Mã học sinh: " + studentID;
 
 const quizDiv = document.getElementById("quiz");
 
-questions.forEach((q, index) => {
-  const saved = localStorage.getItem("q" + index);
+originalQuestions.forEach((group, groupIndex) => {
 
-  const div = document.createElement("div");
-  div.classList.add("question");
+  // hiện tư liệu nếu có
+  if (group.passage) {
+    const passageDiv = document.createElement("div");
+    passageDiv.innerHTML = `<p><b>📄 Tư liệu:</b> ${group.passage}</p><hr>`;
+    quizDiv.appendChild(passageDiv);
+  }
 
-  div.innerHTML = `
-    <p><b>Câu ${index + 1}:</b> ${q.question}</p>
-    ${q.options.map((opt, i) => `
-      <label>
-        <input type="radio" name="q${index}" value="${i}"
-          ${saved == i ? "checked" : ""}
-          onchange="saveAnswer(${index}, ${i})">
-        ${opt}
-      </label>
-    `).join("")}
-  `;
+  group.questions.forEach((q, index) => {
+    const qIndex = groupIndex + "_" + index;
+    const saved = localStorage.getItem("q" + qIndex);
 
-  quizDiv.appendChild(div);
+    const div = document.createElement("div");
+    div.classList.add("question");
+
+    div.innerHTML = `
+      <p><b>Câu hỏi:</b> ${q.question}</p>
+      ${q.options.map((opt, i) => `
+        <label>
+          <input type="radio" name="q${qIndex}" value="${i}"
+            ${saved == i ? "checked" : ""}
+            onchange="saveAnswer('${qIndex}', ${i})">
+          ${opt}
+        </label>
+      `).join("")}
+    `;
+
+    quizDiv.appendChild(div);
+  });
+
 });
 function saveAnswer(qIndex, value) {
   localStorage.setItem("q" + qIndex, value);
@@ -220,8 +241,10 @@ localStorage.removeItem("startTime_" + studentID);
   let score = 0;
   let answers = [];
 
-  questions.forEach((q, index) => {
-    const selected = localStorage.getItem("q" + index);
+originalQuestions.forEach((group, groupIndex) => {
+  group.questions.forEach((q, index) => {
+    const qIndex = groupIndex + "_" + index;
+    const selected = localStorage.getItem("q" + qIndex);
 
     answers.push(selected ?? "");
 
@@ -229,8 +252,9 @@ localStorage.removeItem("startTime_" + studentID);
       score++;
     }
 
-    localStorage.removeItem("q" + index);
+    localStorage.removeItem("q" + qIndex);
   });
+});
 
   localStorage.setItem("done_" + studentID, "true");
 
