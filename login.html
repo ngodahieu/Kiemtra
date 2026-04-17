@@ -156,10 +156,10 @@ function login() {
   // ❗ kiểm tra đã làm chưa (PHẢI đặt trước)
   const done = localStorage.getItem("done_" + id);
 
-  if (done) {
-    alert("Bạn đã làm bài rồi!");
-    return;
-  }
+if (done === "true") {
+  alert("Bạn đã làm bài rồi!");
+  return;
+}
 
   // ✅ chỉ khi hợp lệ mới cho vào
   localStorage.setItem("studentID", id);
