@@ -215,7 +215,7 @@ function saveAnswer(qIndex, value) {
 function submitTest() {
   clearInterval(countdown);
 
-  localStorage.removeItem("startTime");
+localStorage.removeItem("startTime_" + studentID);
 
   let score = 0;
   let answers = [];
@@ -269,13 +269,14 @@ tsParticles.load("particles", {
 const TOTAL_TIME = 120;
 
 // lấy thời điểm bắt đầu (lưu lại)
-let startTime = localStorage.getItem("startTime");
+const key = "startTime_" + studentID;
+
+let startTime = localStorage.getItem(key);
 
 if (!startTime) {
   startTime = Date.now();
-  localStorage.setItem("startTime", startTime);
+  localStorage.setItem(key, startTime);
 }
-
 const timerEl = document.getElementById("timer");
 
 const countdown = setInterval(() => {
