@@ -204,6 +204,7 @@ function shuffleWithSeed(array, seed) {
 
 const seed = getSeedFromString(studentID);
 const questions = shuffleWithSeed(originalQuestions, seed);
+  let finalQuestions = [];
   const shuffledGroups = questions;
 
 document.getElementById("welcome").innerText = "Mã học sinh: " + studentID;
@@ -222,7 +223,10 @@ questions.forEach((group, groupIndex) => {
 const shuffledQuestions = shuffleWithSeed(group.questions, seed + groupIndex);
 
 shuffledQuestions.forEach((q, index) => {
-  const qIndex = groupIndex + "_" + index;
+
+  const qIndex = finalQuestions.length; // index thật
+  finalQuestions.push(q); // lưu thứ tự chuẩn
+
   const saved = localStorage.getItem("q" + qIndex);
 
   const div = document.createElement("div");
@@ -234,7 +238,7 @@ shuffledQuestions.forEach((q, index) => {
       <label>
         <input type="radio" name="q${qIndex}" value="${i}"
           ${saved == i ? "checked" : ""}
-          onchange="saveAnswer('${qIndex}', ${i})">
+          onchange="saveAnswer(${qIndex}, ${i})">
         ${opt}
       </label>
     `).join("")}
@@ -255,9 +259,17 @@ localStorage.removeItem("startTime_" + studentID);
   let score = 0;
   let answers = [];
 
-shuffledGroups.forEach((group, groupIndex) => {
-  group.questions.forEach((q, index) => {
-    const qIndex = groupIndex + "_" + index;
+finalQuestions.forEach((q, index) => {
+  const selected = localStorage.getItem("q" + index);
+
+  answers.push(selected ?? "");
+
+  if (selected !== null && parseInt(selected) === q.answer) {
+    score++;
+  }
+
+  localStorage.removeItem("q" + index);
+});
     const selected = localStorage.getItem("q" + qIndex);
 
     answers.push(selected ?? "");
