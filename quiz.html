@@ -204,6 +204,7 @@ function shuffleWithSeed(array, seed) {
 
 const seed = getSeedFromString(studentID);
 const questions = shuffleWithSeed(originalQuestions, seed);
+  const shuffledGroups = questions;
 
 document.getElementById("welcome").innerText = "Mã học sinh: " + studentID;
 
@@ -254,7 +255,7 @@ localStorage.removeItem("startTime_" + studentID);
   let score = 0;
   let answers = [];
 
-originalQuestions.forEach((group, groupIndex) => {
+shuffledGroups.forEach((group, groupIndex) => {
   group.questions.forEach((q, index) => {
     const qIndex = groupIndex + "_" + index;
     const selected = localStorage.getItem("q" + qIndex);
