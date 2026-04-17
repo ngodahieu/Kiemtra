@@ -86,7 +86,19 @@
       font-weight: bold;
       color: #1e3a8a;
     }
-
+    #timer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: white;
+  color: #1e3a8a;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: 2px solid #3b82f6;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(59,130,246,0.3);
+  z-index: 2;
+}
     @keyframes fadeIn {
       from {opacity: 0; transform: translateY(20px);}
       to {opacity: 1; transform: translateY(0);}
@@ -97,7 +109,7 @@
 <body>
 
 <div id="particles"></div>
-
+<div id="timer">02:00</div>
 <div class="container">
 
   <h2 id="welcome"></h2>
@@ -213,6 +225,28 @@ tsParticles.load("particles", {
     }
   }
 });
+  let timeLeft = 120; // 2 phút (120 giây)
+
+const timerEl = document.getElementById("timer");
+
+const countdown = setInterval(() => {
+  let minutes = Math.floor(timeLeft / 60);
+  let seconds = timeLeft % 60;
+
+  // format 2 số
+  minutes = minutes < 10 ? "0" + minutes : minutes;
+  seconds = seconds < 10 ? "0" + seconds : seconds;
+
+  timerEl.innerText = minutes + ":" + seconds;
+
+  timeLeft--;
+
+  if (timeLeft < 0) {
+    clearInterval(countdown);
+    alert("Hết giờ!");
+    submitTest(); // tự nộp bài
+  }
+}, 1000);
 </script>
 
 </body>
