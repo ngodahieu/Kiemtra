@@ -207,6 +207,7 @@ questions.forEach((q, index) => {
 });
 
 function submitTest() {
+  localStorage.removeItem("startTime"); // reset timer
   let score = 0;
 
   questions.forEach((q, index) => {
