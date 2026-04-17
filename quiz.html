@@ -227,7 +227,7 @@ function submitTest() {
 
     localStorage.removeItem("q" + index); // xóa sau khi nộp
   });
-  localStorage.setItem("done_" + studentID, true);
+  localStorage.setItem("done_" + studentID, "true");
   document.getElementById("result").innerText =
     "Bạn đúng " + score + "/" + questions.length + " câu";
 }
