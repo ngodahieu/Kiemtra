@@ -139,10 +139,11 @@
   box-shadow: 0 0 15px rgba(59,130,246,0.4);
   z-index: 999;
 }
-    #questionNav {
+/* NAV THU GỌN */
+#questionNav {
   position: fixed;
   top: 120px;
-  right: 30px;
+  right: -220px; /* 🔥 ẩn ra ngoài */
   width: 180px;
   max-height: 60vh;
   overflow-y: auto;
@@ -151,7 +152,27 @@
   border-radius: 12px;
   border: 2px solid #3b82f6;
   box-shadow: 0 0 20px rgba(59,130,246,0.5);
-  z-index: 9999; /* 🔥 đảm bảo nổi */
+  z-index: 9999;
+  transition: right 0.3s ease;
+}
+
+/* khi mở */
+#questionNav.open {
+  right: 20px;
+}
+
+/* NÚT MỞ */
+#toggleNav {
+  position: fixed;
+  top: 120px;
+  right: 20px;
+  background: #3b82f6;
+  color: white;
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  z-index: 10000;
+  font-size: 14px;
 }
 
 .q-box {
@@ -180,7 +201,7 @@
 </head>
 
 <body>
-
+<div id="toggleNav">☰</div>
 <div id="particles"></div>
 <div id="timer">90:00</div>
 <div id="questionNav"></div>
@@ -650,7 +671,7 @@ function createQuestionNav() {
     box.innerText = index + 1;
 
     // click → nhảy tới câu
-    box.onclick = () => {
+box.onclick = () => {
   const questions = document.querySelectorAll(".question");
 
   if (questions[index]) {
@@ -659,6 +680,8 @@ function createQuestionNav() {
       block: "center"
     });
   }
+
+  nav.classList.remove("open"); // 🔥 auto đóng
 };
 
     nav.appendChild(box);
@@ -854,6 +877,12 @@ document.addEventListener("keydown", e => {
     e.preventDefault();
   }
 });
+  const toggleBtn = document.getElementById("toggleNav");
+const nav = document.getElementById("questionNav");
+
+toggleBtn.onclick = () => {
+  nav.classList.toggle("open");
+};
 </script>
 
 </body>
