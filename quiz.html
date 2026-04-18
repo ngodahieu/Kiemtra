@@ -32,12 +32,13 @@
     .container {
       position: relative;
       z-index: 1;
-      width: 700px;
+      width: 100%;
+      max-width: none; /* 🔥 giới hạn để không quá to */
       max-height: 90vh;
       overflow-y: auto;
       background: white;
       color: black;
-      padding: 30px;
+      padding: 20px 40px;
       border-radius: 20px;
       border: 3px solid #3b82f6;
       box-shadow: 0 0 25px rgba(59,130,246,0.4);
@@ -193,6 +194,45 @@
   background: #22c55e; /* xanh lá */
   color: white;
 }
+  /* 🔥 LAYOUT 2 CỘT */
+.exam-wrapper {
+  display: flex;
+  gap: 20px;
+}
+
+/* 📄 TƯ LIỆU */
+.passage-box {
+  width: 45%;
+  max-height: 85vh;
+  overflow-y: auto;
+  background: #f8fafc;
+  padding: 15px;
+  border-radius: 15px;
+  border: 2px solid #3b82f6;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ❓ CÂU HỎI */
+.question-box {
+  width: 55%;
+  max-height: 85vh;
+  overflow-y: auto;
+  font-size: 16px;
+}
+
+/* 📱 MOBILE → quay lại 1 cột */
+@media (max-width: 768px) {
+  .exam-wrapper {
+    flex-direction: column;
+  }
+
+  .passage-box,
+  .question-box {
+    width: 100%;
+    max-height: none;
+  }
+}
     @keyframes fadeIn {
       from {opacity: 0; transform: translateY(20px);}
       to {opacity: 1; transform: translateY(0);}
@@ -212,12 +252,13 @@
 <div class="container">
 
   <h2 id="welcome"></h2>
-  
 
-  <div id="quiz"></div>
+  <div class="exam-wrapper">
+    <div id="passageArea" class="passage-box"></div>
+    <div id="quiz" class="question-box"></div>
+  </div>
 
   <button onclick="submitTest()">Nộp bài</button>
-
   <div id="result"></div>
 
 </div>
@@ -562,18 +603,15 @@ function shuffleWithSeed(array, seed) {
 const seed = getSeedFromString(studentID);
 const questions = shuffleWithSeed(originalQuestions, seed);
   let finalQuestions = [];
+  let passageMap = [];
 
 document.getElementById("welcome").innerText = "Mã học sinh: " + studentID;
 
 const quizDiv = document.getElementById("quiz");
+const passageArea = document.getElementById("passageArea"); // ✅ thêm dòng này
 
 questions.forEach((group, groupIndex) => {
 
-  if (group.passage) {
-    const passageDiv = document.createElement("div");
-    passageDiv.innerHTML = `<p><b>📄 Tư liệu:</b> ${group.passage}</p><hr>`;
-    quizDiv.appendChild(passageDiv);
-  }
   // 🔥 XÁO TRỘN CÂU TRONG GROUP
 const shuffledQuestions = shuffleWithSeed(group.questions, seed + groupIndex);
 
@@ -581,6 +619,7 @@ shuffledQuestions.forEach((q, index) => {
 
   const qIndex = finalQuestions.length; // index thật
   finalQuestions.push(q); // lưu thứ tự chuẩn
+  passageMap[qIndex] = group.passage || "";
 
   const saved = localStorage.getItem("q" + qIndex);
 
@@ -644,6 +683,11 @@ else {
 });
   createQuestionNav(); // ✅ đúng vị trí
   updateProgress();
+  // 🔥 THÊM NGAY DƯỚI ĐÂY
+passageArea.innerHTML = passageMap[0]
+  ? `<b>📄 Tư liệu:</b><br>${passageMap[0]}`
+  : "<i>Không có tư liệu</i>";
+
   function saveMulti(qIndex, value, checked) {
   let arr = JSON.parse(localStorage.getItem("q" + qIndex) || "[]");
 
@@ -848,6 +892,23 @@ const countdown = setInterval(() => {
   }
 
 }, 1000);
+
+quizDiv.addEventListener("scroll", () => {
+  const questions = document.querySelectorAll(".question");
+
+  let currentIndex = 0;
+
+  questions.forEach((q, index) => {
+    if (q.offsetTop - quizDiv.scrollTop < quizDiv.clientHeight / 2) {
+      currentIndex = index;
+    }
+  });
+
+  passageArea.innerHTML = passageMap[currentIndex]
+    ? `<b>📄 Tư liệu:</b><br>${passageMap[currentIndex]}`
+    : "<i>Không có tư liệu</i>";
+});
+
   // chặn copy
 document.addEventListener("copy", e => {
   e.preventDefault();
