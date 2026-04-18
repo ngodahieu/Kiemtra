@@ -22,6 +22,7 @@
 }
 
     #particles {
+      pointer-events: none;
       position: absolute;
       width: 100%;
       height: 100%;
@@ -186,7 +187,7 @@
     width: 100%;
     padding: 15px;
     border-radius: 15px;
-    margin-top: 90px; /* 🔥 tránh header đè */
+    margin-top: 90px;
   }
 
   h2 {
@@ -197,31 +198,11 @@
     width: 100%;
   }
 
-  /* ❌ ẨN UI DESKTOP */
+  /* ẨN desktop */
   #questionNav,
   #progressWrapper {
     display: none !important;
   }
-
-  /* 🔥 TIMER (tạm thời vẫn dùng chung) */
-  #timer {
-    top: 10px;
-    right: 10px;
-    font-size: 14px;
-    padding: 8px 12px;
-  }
-
-  /* 📱 CÂU HỎI */
-  .question {
-    font-size: 16px;
-  }
-
-  label {
-    padding: 10px;
-    border-radius: 10px;
-  }
-
-}
 
   /* HEADER FIXED */
   #mobileHeader {
@@ -238,8 +219,8 @@
     border-bottom: 2px solid #3b82f6;
   }
 
-  #timer {
-    position: static;
+  /* TIMER */
+  #timerMobile {
     font-size: 14px;
     padding: 5px 10px;
   }
@@ -252,11 +233,6 @@
   #progressBar {
     height: 6px;
     margin: 5px 0;
-  }
-
-  /* Đẩy nội dung xuống */
-  .container {
-    margin-top: 80px;
   }
 
   /* CÂU HỎI */
@@ -282,16 +258,10 @@
     font-size: 16px;
   }
 
-  /* ẨN desktop */
-  #questionNav,
-  #progressWrapper {
-    display: none;
-  }
-
   /* NÚT MỞ NAV */
   #openNavBtn {
     position: fixed;
-    bottom: 20px;
+    bottom: 80px;
     right: 20px;
     background: #3b82f6;
     color: white;
@@ -335,6 +305,8 @@
     background: #22c55e;
     color: white;
   }
+
+}
 #openNavBtn {
   bottom: 80px;
 }
@@ -343,9 +315,9 @@
 
 <body>
 <div id="mobileHeader">
-  <div id="timerMobile">90:00</div>
+  <div id="timerMobile" class="timer">90:00</div>
   <div>
-    <div id="progressText">0/0</div>
+    <div id="progressTextMobile"></div>
     <div id="progressBar">
       <div id="progressFill"></div>
     </div>
@@ -356,9 +328,9 @@
 
 <div id="mobileNav"></div>
 <div id="particles"></div>
-<div id="timerDesktop">90:00</div>
+<div id="timerDesktop" class="timer">90:00</div>
 <div id="questionNav"></div>
-  <div id="progressText">Đã làm: 0/0 câu</div>
+  <div id="progressTextDesktop"></div>
 <div id="progressBar">
   <div id="progressFill"></div>
 </div>
@@ -995,9 +967,18 @@ if (!startTime) {
   startTime = Date.now();
   localStorage.setItem(key, startTime);
 }
-const timerEl = window.innerWidth <= 768
-  ? document.getElementById("timerMobile")
-  : document.getElementById("timerDesktop");
+let timerEl;
+
+function setTimerElement() {
+  if (window.innerWidth <= 768) {
+    timerEl = document.getElementById("timerMobile");
+  } else {
+    timerEl = document.getElementById("timerDesktop");
+  }
+}
+
+setTimerElement();
+window.addEventListener("resize", setTimerElement);
 
 const countdown = setInterval(() => {
   const now = Date.now();
