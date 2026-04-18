@@ -774,15 +774,12 @@ function submitTest() {
 // particles nhẹ
 tsParticles.load("particles", {
   particles: {
-    number: { value: 40 },
+    number: { value: 20 }, // giảm luôn cho nhẹ
     color: { value: "#3b82f6" },
     size: { value: 2 },
-    move: { enable: true, speed: 0.5 },
-    links: {
-      enable: true,
-      color: "#3b82f6",
-      opacity: 0.1
-    }
+
+    move: { enable: false }, // ❌ tắt chuyển động
+    links: { enable: false } // ❌ tắt nối dây
   }
 });
   // tổng thời gian (5 phút)
