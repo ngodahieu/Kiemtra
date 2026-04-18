@@ -18,9 +18,6 @@
     body {
   background: linear-gradient(135deg, #020617, #0f172a);
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* 🔥 đổi */
   overflow-y: auto;        /* 🔥 đổi */
   padding-top: 40px;       /* 🔥 thêm cho đẹp */
 }
@@ -46,6 +43,7 @@
       border: 3px solid #3b82f6;
       box-shadow: 0 0 25px rgba(59,130,246,0.4);
       animation: fadeIn 0.8s ease;
+      margin: 0 auto; /* 🔥 THÊM DÒNG NÀY */
     }
 
     h2 {
@@ -144,13 +142,13 @@
 }
     #questionNav {
   position: fixed;
-  top: 140px;
-  right: 20px;
-  width: 240px;
-  max-height: 70vh;
+  top: 120px;
+  right: 30px;
+  width: 180px;
+  max-height: 60vh;
   overflow-y: auto;
   background: white;
-  padding: 12px;
+  padding: 10px;
   border-radius: 12px;
   border: 2px solid #3b82f6;
   box-shadow: 0 0 20px rgba(59,130,246,0.5);
@@ -159,11 +157,12 @@
 
 .q-box {
   text-align: center;
-  padding: 6px;
-  border-radius: 6px;
+  padding: 8px;
+  border-radius: 8px;
   border: 1px solid #3b82f6;
   cursor: pointer;
   font-size: 14px;
+  transition: 0.2s;
 }
 
 .q-box:hover {
@@ -171,7 +170,7 @@
 }
 
 .q-done {
-  background: #3b82f6;
+  background: #22c55e; /* xanh lá */
   color: white;
 }
     @keyframes fadeIn {
