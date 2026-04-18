@@ -176,11 +176,185 @@
       from {opacity: 0; transform: translateY(20px);}
       to {opacity: 1; transform: translateY(0);}
     }
+  @media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 15px;
+  }
+
+  #timer {
+    top: 10px;
+    right: 10px;
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  #progressWrapper {
+    display: none; /* ẩn cho gọn */
+  }
+
+  #questionNav {
+    display: none; /* ẩn nav bên phải */
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+    .question {
+  font-size: 16px;
+}
+
+label {
+  padding: 8px;
+  border-radius: 8px;
+}
+    @media (max-width: 768px) {
+
+  body {
+    padding: 10px;
+  }
+
+  .container {
+    width: 100%;
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  /* HEADER FIXED */
+  #mobileHeader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 2px solid #3b82f6;
+  }
+
+  #timer {
+    position: static;
+    font-size: 14px;
+    padding: 5px 10px;
+  }
+
+  #progressText {
+    font-size: 12px;
+    margin: 0;
+  }
+
+  #progressBar {
+    height: 6px;
+    margin: 5px 0;
+  }
+
+  /* Đẩy nội dung xuống */
+  .container {
+    margin-top: 80px;
+  }
+
+  /* CÂU HỎI */
+  .question {
+    font-size: 16px;
+  }
+
+  label {
+    display: block;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 8px;
+  }
+
+  input[type="radio"],
+  input[type="checkbox"] {
+    transform: scale(1.2);
+  }
+
+  button {
+    width: 100%;
+    font-size: 16px;
+  }
+
+  /* ẨN desktop */
+  #questionNav,
+  #progressWrapper {
+    display: none;
+  }
+
+  /* NÚT MỞ NAV */
+  #openNavBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #3b82f6;
+    color: white;
+    border-radius: 50%;
+    width: 55px;
+    height: 55px;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  /* POPUP NAV */
+  #mobileNav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60%;
+    background: white;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    display: none;
+    flex-wrap: wrap;
+    padding: 10px;
+    overflow-y: auto;
+    z-index: 2000;
+  }
+
+  .m-q-box {
+    width: 20%;
+    text-align: center;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 8px;
+    border: 1px solid #3b82f6;
+  }
+
+  .m-q-done {
+    background: #22c55e;
+    color: white;
+  }
+}
   </style>
 </head>
 
 <body>
+<div id="mobileHeader">
+  <div id="timer">90:00</div>
+  <div>
+    <div id="progressText">0/0</div>
+    <div id="progressBar">
+      <div id="progressFill"></div>
+    </div>
+  </div>
+</div>
 
+<div id="openNavBtn">☰</div>
+
+<div id="mobileNav"></div>
 <div id="particles"></div>
 <div id="timer">90:00</div>
 <div id="questionNav"></div>
@@ -622,6 +796,7 @@ else {
 
 });
   createQuestionNav(); // ✅ đúng vị trí
+  createMobileNav();
   updateProgress();
   function saveMulti(qIndex, value, checked) {
   let arr = JSON.parse(localStorage.getItem("q" + qIndex) || "[]");
@@ -686,6 +861,19 @@ function updateProgress() {
   });
 
   const total = finalQuestions.length;
+  // 👉 Auto scroll tới câu chưa làm tiếp theo (mobile rất tiện)
+if (window.innerWidth <= 768) {
+  const questions = document.querySelectorAll(".question");
+  for (let i = 0; i < finalQuestions.length; i++) {
+    if (!localStorage.getItem("q" + i)) {
+      questions[i]?.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+      break;
+    }
+  }
+}
 
   document.getElementById("progressText").innerText =
     `Đã làm: ${answered}/${total} câu`;
@@ -867,6 +1055,46 @@ document.addEventListener("keydown", e => {
     e.preventDefault();
   }
 });
+  const mobileNav = document.getElementById("mobileNav");
+const openNavBtn = document.getElementById("openNavBtn");
+
+openNavBtn.onclick = () => {
+  mobileNav.style.display =
+    mobileNav.style.display === "flex" ? "none" : "flex";
+};
+
+// tạo nav mobile
+function createMobileNav() {
+  mobileNav.innerHTML = "";
+
+  finalQuestions.forEach((q, index) => {
+    const box = document.createElement("div");
+    box.classList.add("m-q-box");
+    box.innerText = index + 1;
+
+    box.onclick = () => {
+      document.querySelectorAll(".question")[index]
+        .scrollIntoView({ behavior: "smooth", block: "center" });
+      mobileNav.style.display = "none";
+    };
+
+    mobileNav.appendChild(box);
+  });
+
+  updateMobileNav();
+}
+
+function updateMobileNav() {
+  const boxes = document.querySelectorAll(".m-q-box");
+
+  boxes.forEach((box, index) => {
+    if (localStorage.getItem("q" + index) !== null) {
+      box.classList.add("m-q-done");
+    } else {
+      box.classList.remove("m-q-done");
+    }
+  });
+}
 </script>
 
 </body>
