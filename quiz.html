@@ -450,8 +450,8 @@ else if (q.type === "multi") {
     ${q.options.map((opt, i) => `
       <label>
         <input type="checkbox"
-          ${savedArr.includes(i) ? "checked" : ""}
-          onchange="saveMulti(${qIndex}, ${i}, this.checked)">
+  ${savedArr.includes(i) ? "checked disabled" : ""}
+  onchange="handleMultiOnce(this, ${qIndex}, ${i})">
         ${opt}
       </label>
     `).join("")}
@@ -490,6 +490,17 @@ else {
 
   localStorage.setItem("q" + qIndex, JSON.stringify(arr));
   updateProgress();
+}
+function handleMultiOnce(el, qIndex, value) {
+  if (el.checked) {
+    // lưu đáp án
+    saveMulti(qIndex, value, true);
+
+    // khóa toàn bộ checkbox của câu đó
+    const parent = el.closest(".question");
+    const inputs = parent.querySelectorAll("input[type='checkbox']");
+    inputs.forEach(inp => inp.disabled = true);
+  }
 }
 function saveAnswer(qIndex, value) {
   localStorage.setItem("q" + qIndex, value);
