@@ -708,60 +708,77 @@ function updateProgress() {
 }
 function submitTest() {
   clearInterval(countdown);
-
-localStorage.removeItem("startTime_" + studentID);
+  localStorage.removeItem("startTime_" + studentID);
 
   let score = 0;
-let answers = [];
-let wrongAnswers = []; // 🔥 THÊM DÒNG NÀY
+  let answers = [];
+  let wrongAnswers = []; // ✅ lưu câu sai + chưa làm
 
-finalQuestions.forEach((q, index) => {
-  const selected = localStorage.getItem("q" + index);
+  finalQuestions.forEach((q, index) => {
+    const selected = localStorage.getItem("q" + index);
 
-  answers.push(selected ?? "");
+    answers.push(selected ?? "");
 
-  let isCorrect = false; // 🔥 THÊM
+    let isCorrect = false;
 
-  if (selected !== null) {
+    if (selected !== null) {
 
-    // ✅ SHORT
-    if (q.type === "short") {
-      const normalize = (str) =>
-        str.trim().toLowerCase().replace(/\s+/g, "");
+      // ✅ SHORT
+      if (q.type === "short") {
+        const normalize = (str) =>
+          str.trim().toLowerCase().replace(/\s+/g, "");
 
-      isCorrect = normalize(selected) === normalize(q.answer);
-    }
+        isCorrect = normalize(selected) === normalize(q.answer);
+      }
 
-    // ✅ MULTI
-    else if (q.type === "multi") {
-      const userArr = JSON.parse(selected);
-      const correctArr = q.answer;
+      // ✅ MULTI
+      else if (q.type === "multi") {
+        const userArr = JSON.parse(selected);
+        const correctArr = q.answer;
 
-      isCorrect =
-        userArr.length === correctArr.length &&
-        userArr.every(v => correctArr.includes(v));
-    }
+        isCorrect =
+          userArr.length === correctArr.length &&
+          userArr.every(v => correctArr.includes(v));
+      }
 
-    // ✅ RADIO
-    else {
-      isCorrect = parseInt(selected) === q.answer;
-    }
+      // ✅ RADIO
+      else {
+        isCorrect = parseInt(selected) === q.answer;
+      }
 
-    if (isCorrect) {
-      score++;
+      if (isCorrect) {
+        score++;
+      } else {
+        wrongAnswers.push(`Câu ${index + 1}`);
+      }
+
     } else {
-      // 🔥 LƯU CÂU SAI
+      // ❗ CHƯA LÀM → cũng tính là sai
       wrongAnswers.push(`Câu ${index + 1}`);
     }
 
-  } else {
-    // 🔥 BỎ TRỐNG → cũng sai
-    wrongAnswers.push(`Câu ${index + 1}`);
-  }
+    // ✅ XÓA SAU MỖI CÂU
+    localStorage.removeItem("q" + index);
+  });
 
-  localStorage.removeItem("q" + index);
-});
-  localStorage.removeItem("q" + index);
+  localStorage.setItem("done_" + studentID, "true");
+
+  // ✅ GỬI GOOGLE FORM
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSd_YK4a8Av99jA8Am5yOBx1kw2Xuw2nRlMz-Mfx08GqnO_T5Q/formResponse", {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body:
+      "entry.891986647=" + studentID +
+      "&entry.156437038=" + score +
+      "&entry.1381726656=" + answers.join(",") +
+      "&entry.1312755056=" + wrongAnswers.join(", ")
+  });
+
+  alert("🎉 Chúc mừng bạn đã hoàn thành bài thi!");
+  window.location.href = "index.html";
 });
   localStorage.setItem("done_" + studentID, "true");
 
