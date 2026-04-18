@@ -569,7 +569,12 @@ thu được phức chất bát diện chỉ chứa phối tử NH3 có màu xan
 },
 ];
 const studentID = localStorage.getItem("studentID");
-
+// 🔥 RESET TOÀN BỘ ĐÁP ÁN CŨ KHI VÀO BÀI
+Object.keys(localStorage).forEach(key => {
+  if (key.startsWith("q")) {
+    localStorage.removeItem(key);
+  }
+});
 if (!studentID) {
   alert("Chưa đăng nhập!");
   window.location.href = "login.html";
