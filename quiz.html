@@ -580,7 +580,14 @@ if (q.type === "short") {
 }
 
 else if (q.type === "multi") {
-  const savedArr = JSON.parse(localStorage.getItem("q" + qIndex) || "[]");
+  let savedArr;
+
+try {
+  savedArr = JSON.parse(localStorage.getItem("q" + qIndex));
+  if (!Array.isArray(savedArr)) savedArr = [];
+} catch {
+  savedArr = [];
+}
 
   div.innerHTML = `
     <p><b>Câu ${qIndex + 1}:</b> ${q.question}</p>
