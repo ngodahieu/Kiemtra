@@ -712,47 +712,55 @@ function submitTest() {
 localStorage.removeItem("startTime_" + studentID);
 
   let score = 0;
-  let answers = [];
+let answers = [];
+let wrongAnswers = []; // 🔥 THÊM DÒNG NÀY
 
 finalQuestions.forEach((q, index) => {
   const selected = localStorage.getItem("q" + index);
 
   answers.push(selected ?? "");
 
+  let isCorrect = false; // 🔥 THÊM
+
   if (selected !== null) {
 
-  // ✅ CÂU TRẢ LỜI NGẮN
-  if (q.type === "short") {
-    const normalize = (str) =>
-  str.trim().toLowerCase().replace(/\s+/g, "");
+    // ✅ SHORT
+    if (q.type === "short") {
+      const normalize = (str) =>
+        str.trim().toLowerCase().replace(/\s+/g, "");
 
-    if (normalize(selected) === normalize(q.answer)) {
-      score++;
+      isCorrect = normalize(selected) === normalize(q.answer);
     }
-  }
 
-  // ✅ CÂU CHECKBOX (MULTI)
-  else if (q.type === "multi") {
-    const userArr = JSON.parse(selected);
-    const correctArr = q.answer;
+    // ✅ MULTI
+    else if (q.type === "multi") {
+      const userArr = JSON.parse(selected);
+      const correctArr = q.answer;
 
-    // so sánh 2 mảng
-    const isCorrect =
-      userArr.length === correctArr.length &&
-      userArr.every(v => correctArr.includes(v));
+      isCorrect =
+        userArr.length === correctArr.length &&
+        userArr.every(v => correctArr.includes(v));
+    }
+
+    // ✅ RADIO
+    else {
+      isCorrect = parseInt(selected) === q.answer;
+    }
 
     if (isCorrect) {
       score++;
+    } else {
+      // 🔥 LƯU CÂU SAI
+      wrongAnswers.push(`Câu ${index + 1}`);
     }
+
+  } else {
+    // 🔥 BỎ TRỐNG → cũng sai
+    wrongAnswers.push(`Câu ${index + 1}`);
   }
 
-  // ✅ CÂU RADIO
-  else {
-    if (parseInt(selected) === q.answer) {
-      score++;
-    }
-  }
-}
+  localStorage.removeItem("q" + index);
+});
   localStorage.removeItem("q" + index);
 });
   localStorage.setItem("done_" + studentID, "true");
@@ -765,9 +773,10 @@ finalQuestions.forEach((q, index) => {
       "Content-Type": "application/x-www-form-urlencoded"
     },
     body:
-      "entry.891986647=" + studentID +
-      "&entry.156437038=" + score +
-      "&entry.1381726656=" + answers.join(",")
+  "entry.891986647=" + studentID +
+  "&entry.156437038=" + score +
+  "&entry.1381726656=" + answers.join(",") +
+  "&entry.1312755056=" + wrongAnswers.join(", ")
   });
 
   alert("🎉 Chúc mừng bạn đã hoàn thành bài thi!");
