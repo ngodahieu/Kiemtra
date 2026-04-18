@@ -176,44 +176,7 @@
       from {opacity: 0; transform: translateY(20px);}
       to {opacity: 1; transform: translateY(0);}
     }
-  @media (max-width: 768px) {
-  .container {
-    width: 95%;
-    padding: 15px;
-  }
-
-  #timer {
-    top: 10px;
-    right: 10px;
-    font-size: 14px;
-    padding: 8px 12px;
-  }
-
-  #progressWrapper {
-    display: none; /* ẩn cho gọn */
-  }
-
-  #questionNav {
-    display: none; /* ẩn nav bên phải */
-  }
-
-  h2 {
-    font-size: 18px;
-  }
-
-  button {
-    width: 100%;
-  }
-}
-    .question {
-  font-size: 16px;
-}
-
-label {
-  padding: 8px;
-  border-radius: 8px;
-}
-    @media (max-width: 768px) {
+@media (max-width: 768px) {
 
   body {
     padding: 10px;
@@ -223,7 +186,42 @@ label {
     width: 100%;
     padding: 15px;
     border-radius: 15px;
+    margin-top: 90px; /* 🔥 tránh header đè */
   }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  /* ❌ ẨN UI DESKTOP */
+  #questionNav,
+  #progressWrapper {
+    display: none !important;
+  }
+
+  /* 🔥 TIMER (tạm thời vẫn dùng chung) */
+  #timer {
+    top: 10px;
+    right: 10px;
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+
+  /* 📱 CÂU HỎI */
+  .question {
+    font-size: 16px;
+  }
+
+  label {
+    padding: 10px;
+    border-radius: 10px;
+  }
+
+}
 
   /* HEADER FIXED */
   #mobileHeader {
@@ -337,13 +335,15 @@ label {
     background: #22c55e;
     color: white;
   }
+#openNavBtn {
+  bottom: 80px;
 }
   </style>
 </head>
 
 <body>
 <div id="mobileHeader">
-  <div id="timer">90:00</div>
+  <div id="timerMobile">90:00</div>
   <div>
     <div id="progressText">0/0</div>
     <div id="progressBar">
@@ -356,7 +356,7 @@ label {
 
 <div id="mobileNav"></div>
 <div id="particles"></div>
-<div id="timer">90:00</div>
+<div id="timerDesktop">90:00</div>
 <div id="questionNav"></div>
   <div id="progressText">Đã làm: 0/0 câu</div>
 <div id="progressBar">
@@ -995,7 +995,9 @@ if (!startTime) {
   startTime = Date.now();
   localStorage.setItem(key, startTime);
 }
-const timerEl = document.getElementById("timer");
+const timerEl = window.innerWidth <= 768
+  ? document.getElementById("timerMobile")
+  : document.getElementById("timerDesktop");
 
 const countdown = setInterval(() => {
   const now = Date.now();
