@@ -14,7 +14,6 @@
       box-sizing: border-box;
       font-family: "Poppins", sans-serif;
     }
-
     body {
   background: linear-gradient(135deg, #020617, #0f172a);
   min-height: 100vh;
@@ -239,7 +238,29 @@ answer: 2
       },
     ]
   },
-
+  {
+    passage:"",
+    questions: [
+  {
+  question: `Muối Mohr là một muối kép ngậm nước được tạo thành từ hỗn hợp cùng số mol theo phương trình: <br>
+  <center> FeSO<sub>4</sub>.7H<sub>2</sub>O + (NH<sub>4</sub>)<sub>2</sub>SO<sub>4</sub> → FeSO<sub>4</sub>.(NH<sub>4</sub>)<sub>2</sub>SO<sub>4</sub>.6H<sub>2</sub>O + H<sub>2</sub>O </center> <br>
+  Cho độ tan của muối Mohr ở 20°C là 26,9 gam/100 gam H2O và ở 80°C là 73,0 gam/100 gam H<sub>2</sub>O. 
+  Tính khối lượng của muối FeSO<sub>4</sub>.7H<sub>2</sub>O (gam) cần thiết để tạo thành dung dịch muối 
+  Mohr bão hòa 80°C, sau khi làm nguội dung dịch này xuống 20°C để thu được 100 gam muối Mohr tinh thể 
+  và dung dịch bão hòa. Giả thiết trong quá trình kết tinh nước bay hơi không đáng kể (làm tròn đến hàng đơn vị) <br>
+  <b>Cho khối lượng mol của Fe = 56, S = 32, O = 16, N = 14, H = 1.</b>`,
+  type: "short",
+  answer: "112"
+},
+  {
+        question: `Cho biết:E°<sub>Al<sup>3+</sup>/Al</sub> = −1,676 V; E°<sub>Zn<sup>2+</sup>/Zn</sub> = −0,763 V ; E°<sub>Pb<sup>2+</sup>/Pb</sub> = −0,126 V; 
+        E°<sub>Cu<sup>2+</sup>/Cu</sub> = +0,340 V. <br>
+        Trong các pin điện hoá sau, pin nào có sức điện động chuẩn lớn nhất?`,
+        options: ["A. Pin Zn-Pb.", "B. Pin Pb-Cu.", "C. Pin Zn-Cu.", "D. Pin Al-Zn."],
+        answer: 2
+      },
+  ]
+  }
 ];
 const studentID = localStorage.getItem("studentID");
 
@@ -301,6 +322,18 @@ shuffledQuestions.forEach((q, index) => {
   const div = document.createElement("div");
   div.classList.add("question");
 
+  if (q.type === "short") {
+  const savedText = localStorage.getItem("q" + qIndex) || "";
+
+  div.innerHTML = `
+    <p><b>Câu ${qIndex + 1}:</b> ${q.question}</p>
+    <input type="text"
+      value="${savedText}"
+      placeholder="Nhập câu trả lời..."
+      oninput="saveAnswer(${qIndex}, this.value)"
+      style="width:100%; padding:8px; border-radius:8px; border:1px solid #ccc;">
+  `;
+} else {
   div.innerHTML = `
     <p><b>Câu ${qIndex + 1}:</b> ${q.question}</p>
     ${q.options.map((opt, i) => `
@@ -312,6 +345,7 @@ shuffledQuestions.forEach((q, index) => {
       </label>
     `).join("")}
   `;
+}
 
   quizDiv.appendChild(div);
 });
@@ -392,9 +426,20 @@ finalQuestions.forEach((q, index) => {
 
   answers.push(selected ?? "");
 
-  if (selected !== null && parseInt(selected) === q.answer) {
-    score++;
+  if (selected !== null) {
+  if (q.type === "short") {
+    const normalize = (str) =>
+      str.toLowerCase().replace(/\s+/g, "");
+
+    if (normalize(selected) === normalize(q.answer)) {
+      score++;
+    }
+  } else {
+    if (parseInt(selected) === q.answer) {
+      score++;
+    }
   }
+}
   localStorage.removeItem("q" + index);
 });
   localStorage.setItem("done_" + studentID, "true");
